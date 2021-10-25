@@ -1,0 +1,9 @@
+me\maxrenner\gamefiles\Game.class
+me\maxrenner\Hangman.class
+me\maxrenner\managers\AlphabetBlockManager.class
+me\maxrenner\gamefiles\LetterBlock.class
+me\maxrenner\managers\MouseInputManager$1.class
+me\maxrenner\managers\MouseInputManager.class
+me\maxrenner\managers\WindowManager.class
+me\maxrenner\managers\FileManager.class
+me\maxrenner\managers\LoggingManager.class
