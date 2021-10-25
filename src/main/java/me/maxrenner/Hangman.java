@@ -56,11 +56,12 @@ public class Hangman {
         mouseInputManager = new MouseInputManager();
         logger = new LoggingManager();
         windowManager = new WindowManager();
-        alphabetBlockManager = new AlphabetBlockManager();
-        uxButtonsManager = new UXButtonsManager();
         game = new Game(this);
+        uxButtonsManager = new UXButtonsManager();
 
         windowManager.build("Hangman - Max Renner", 600,600, game);
+
+        alphabetBlockManager = new AlphabetBlockManager(game.getPreferredSize().width, game.getPreferredSize().height);
 
         logger.info("Starting game thread...");
         Thread thread = new Thread(game);

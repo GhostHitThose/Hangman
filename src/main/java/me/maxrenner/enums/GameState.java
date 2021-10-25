@@ -1,6 +1,7 @@
 package me.maxrenner.enums;
 
 public enum GameState {
+    TITLE,
     NEW_WORD,
     START,
     WIN,

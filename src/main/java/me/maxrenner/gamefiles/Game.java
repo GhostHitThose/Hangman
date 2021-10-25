@@ -5,6 +5,7 @@ import me.maxrenner.Hangman;
 import me.maxrenner.enums.GameState;
 import me.maxrenner.managers.FileManager;
 import me.maxrenner.utils.CenterWord;
+import me.maxrenner.ux.buttons.ExitButton;
 import me.maxrenner.ux.buttons.PauseButton;
 
 import java.awt.*;
@@ -39,7 +40,8 @@ public class Game extends Canvas implements Runnable {
         word = "";
         running = true;
 
-        hangman.getUxButtonsManager().getButtons().add(new PauseButton(600-35,0,30,30,Color.GRAY, Color.DARK_GRAY, true, this));
+        hangman.getUxButtonsManager().getButtons().add(new PauseButton(getPreferredSize().width - getPreferredSize().width/15,0,getPreferredSize().width/15,getPreferredSize().height/15,Color.GRAY, Color.DARK_GRAY,this));
+        hangman.getUxButtonsManager().getButtons().add(new ExitButton(getPreferredSize().width/2 - ))
     }
 
     @Override
@@ -108,6 +110,8 @@ public class Game extends Canvas implements Runnable {
             case START:
                 gameState = GameState.PLAYING;
                 break;
+            case PAUSED:
+                break;
             case END:
                 // ask if they would like to play again
                 running = false;
@@ -135,11 +139,24 @@ public class Game extends Canvas implements Runnable {
 
         handleBufferedImage(g, image);
 
-        // Game rendering
-        drawWord(g);
+        // Scene Control
+        switch(gameState){
+            case PLAYING:
+                drawWord(g);
+                hangman.getAlphabetBlockManager().drawBlocks(g);
+                hangman.getUxButtonsManager().getButtons().forEach(b ->{
+                    b.setVisible(b instanceof PauseButton);
+                });
+                hangman.getUxButtonsManager().buildAll(g);
 
-        hangman.getAlphabetBlockManager().drawBlocks(g);
-        hangman.getUxButtonsManager().buildAll(g);
+                break;
+            case PAUSED:
+                hangman.getUxButtonsManager().getButtons().forEach(b ->{
+                    b.setVisible(b instanceof ExitButton);
+                });
+                g.setColor(new Color(0,0,0, 0.3F));
+                g.fillRect(0,0,getPreferredSize().width,getPreferredSize().height);
+        }
 
         bs.show();
     }

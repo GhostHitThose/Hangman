@@ -5,7 +5,7 @@ public class LoggingManager {
         System.out.println("[Hangman] " + msg);
     }
 
-    public void error(String err){
-        System.err.println("[Hangman] " + err);
+    public void error(String msg){
+        System.err.println("[Hangman] " + msg);
     }
 }

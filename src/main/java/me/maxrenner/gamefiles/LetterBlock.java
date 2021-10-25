@@ -8,14 +8,16 @@ import java.awt.*;
 
 public class LetterBlock {
 
-    @Getter private final int x, y, width = 40, height = 40;
+    @Getter private final int x, y, width, height;
     @Getter private final char letter;
     @Getter @Setter private boolean hovered;
 
-    public LetterBlock(int x, int y, char letter) {
+    public LetterBlock(int x, int y, int width, int height, char letter) {
         this.x = x;
         this.y = y;
         this.letter = letter;
+        this.width = width;
+        this.height = height;
     }
 
     public void draw(Graphics2D g) {
