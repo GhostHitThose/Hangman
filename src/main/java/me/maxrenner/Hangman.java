@@ -59,7 +59,7 @@ public class Hangman {
         game = new Game(this);
         uxButtonsManager = new UXButtonsManager();
 
-        windowManager.build("Hangman - Max Renner", 600,600, game);
+        windowManager.build("Hangman - Max Renner", 1280,720, game);
 
         alphabetBlockManager = new AlphabetBlockManager(game.getPreferredSize().width, game.getPreferredSize().height);
 

@@ -22,13 +22,14 @@ public class PauseButton extends Button {
 
     @Override
     public void build(Graphics2D g) {
+        if(!isVisible()) return;
         super.build(g);
-        CenterWord.drawCenteredWord(g, "||", new Font("Sans", Font.PLAIN, 25), Color.BLACK, 0, getX(), getY(), getWidth(), getHeight());
+        CenterWord.drawCenteredWord(g, "||", new Font("Impact", Font.BOLD, 25), Color.BLACK, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
     public void onClick() {
-        setHovered(0,0);
+        if(!isVisible()) return;
         game.setGameState(GameState.PAUSED);
     }
 }

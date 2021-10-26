@@ -2,6 +2,7 @@ package me.maxrenner.ux.buttons;
 
 import me.maxrenner.enums.GameState;
 import me.maxrenner.gamefiles.Game;
+import me.maxrenner.utils.CenterWord;
 
 import java.awt.*;
 
@@ -20,11 +21,15 @@ public class ExitButton extends Button{
 
     @Override
     public void build(Graphics2D g) {
+        if(!isVisible()) return;
         super.build(g);
+        g.setColor(Color.BLACK);
+        CenterWord.drawCenteredWord(g, "EXIT", new Font("Impact", Font.PLAIN, 40), Color.BLACK, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
     public void onClick() {
+        if(!isVisible()) return;
         game.setGameState(GameState.END);
     }
 }
