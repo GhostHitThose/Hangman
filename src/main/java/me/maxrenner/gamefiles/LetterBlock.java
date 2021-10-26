@@ -2,7 +2,6 @@ package me.maxrenner.gamefiles;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.maxrenner.Hangman;
 
 import java.awt.*;
 
@@ -10,7 +9,7 @@ public class LetterBlock {
 
     @Getter private final int x, y, width, height;
     @Getter private final char letter;
-    @Getter @Setter private boolean hovered;
+    @Getter @Setter private boolean hovered, visible;
 
     public LetterBlock(int x, int y, int width, int height, char letter) {
         this.x = x;
@@ -21,6 +20,7 @@ public class LetterBlock {
     }
 
     public void draw(Graphics2D g) {
+        if(!isVisible()) return;
         if(isHovered()){
             g.setColor(Color.darkGray);
         } else {
@@ -38,7 +38,7 @@ public class LetterBlock {
         return(this.x <=x &&this.x+width >=x)&&(this.y <=y &&this.y +height >=y);
     }
 
-    public void delete(){
-        Hangman.getInstance().getAlphabetBlockManager().getLetterBlocks().remove(this);
+    public void destroy(){
+        visible = false;
     }
 }

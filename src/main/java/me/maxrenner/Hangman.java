@@ -31,17 +31,16 @@ Put a word bank at the bottom of the screen.
 import lombok.Getter;
 import me.maxrenner.gamefiles.Game;
 import me.maxrenner.gamefiles.managers.MouseInputManager;
-import me.maxrenner.managers.*;
+import me.maxrenner.managers.FileManager;
+import me.maxrenner.managers.LoggingManager;
+import me.maxrenner.managers.WindowManager;
 import me.maxrenner.ux.managers.AlphabetBlockManager;
 import me.maxrenner.ux.managers.UXButtonsManager;
-
-import java.io.InputStream;
 
 public class Hangman {
 
     @Getter private static Hangman instance;
     @Getter private final Game game;
-    @Getter private InputStream wordFile;
     @Getter private final LoggingManager logger;
     @Getter private final WindowManager windowManager;
     @Getter private final MouseInputManager mouseInputManager;
@@ -59,7 +58,7 @@ public class Hangman {
         game = new Game(this);
         uxButtonsManager = new UXButtonsManager();
 
-        windowManager.build("Hangman - Max Renner", 1280,720, game);
+        windowManager.build("Hangman - Max Renner", 900,900, game);
 
         alphabetBlockManager = new AlphabetBlockManager(game.getPreferredSize().width, game.getPreferredSize().height);
 
@@ -69,7 +68,7 @@ public class Hangman {
     }
 
     private void loadDefaultWordFile(){
-        wordFile = this.getClass().getResourceAsStream("/wordbank.yml");
+        FileManager.loadFile(this.getClass().getResourceAsStream("/wordbank.yml"));
     }
 
     public static void main(String[] args){

@@ -2,6 +2,7 @@ package me.maxrenner.ux.buttons;
 
 import me.maxrenner.enums.GameState;
 import me.maxrenner.gamefiles.Game;
+import me.maxrenner.utils.CenterWord;
 
 import java.awt.*;
 
@@ -22,6 +23,7 @@ public class PlayAgainButton extends Button {
     public void build(Graphics2D g) {
         if(!isVisible()) return;
         super.build(g);
+        CenterWord.drawCenteredWord(g, "Play Again", new Font("Impact", Font.BOLD, 30), Color.BLACK, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override

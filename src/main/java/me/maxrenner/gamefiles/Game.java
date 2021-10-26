@@ -34,8 +34,6 @@ public class Game extends Canvas implements Runnable {
         hangman.getLogger().info("Started game thread.");
         hangman.getLogger().info("Starting main game loop...");
         gameState = GameState.TITLE;
-        lettersChosen = new ArrayList<>();
-        word = "";
         running = true;
 
         hangman.getUxButtonsManager().getButtons().add(new PauseButton(getPreferredSize().width - getPreferredSize().width/25,0,getPreferredSize().width/25,getPreferredSize().width/25,Color.GRAY, Color.DARK_GRAY,this));
@@ -77,6 +75,11 @@ public class Game extends Canvas implements Runnable {
             render();
         }
 
+        stop();
+    }
+
+    private void stop(){
+        hangman.getLogger().error("Exiting game with error code 0");
         System.exit(0);
     }
 
@@ -103,7 +106,10 @@ public class Game extends Canvas implements Runnable {
             case NEW_GAME:
                 ArrayList<String> words = getWordList();
                 word = getRandomWord(words);
+                guesses = 0;
                 wordLetterList = new ArrayList<>();
+                lettersChosen = new ArrayList<>();
+                hangman.getAlphabetBlockManager().getLetterBlocks().forEach(b -> b.setVisible(true));
                 for(char l : word.toCharArray()) wordLetterList.add(l);
                 gameState = GameState.PLAYING;
                 break;
@@ -137,6 +143,9 @@ public class Game extends Canvas implements Runnable {
         // Scene Control
         switch(gameState){
             case TITLE:
+                Font titleFont = new Font("Serif", Font.BOLD, 50);
+                CenterWord.drawCenteredWordHorizontal(g, "Hangman", titleFont, Color.BLACK, 0, getPreferredSize().height/4, getPreferredSize().width);
+                CenterWord.drawCenteredWordHorizontal(g, "\t\tBy Max Renner", new Font("Serif", Font.BOLD, 40), Color.BLACK, 0, getPreferredSize().height/4+2*g.getFontMetrics().getAscent(), getPreferredSize().width);
                 hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayButton));
                 break;
             case PLAYING:
@@ -146,17 +155,24 @@ public class Game extends Canvas implements Runnable {
                     b.setVisible(b instanceof PauseButton);
                 });
 
+                g.setFont(new Font("Sans Serif", Font.PLAIN, 40));
+                g.setColor(Color.BLACK);
+                g.drawString("Guesses Left: " + (10-guesses), 0, g.getFontMetrics().getAscent());
+
                 break;
             case PAUSED:
+                hangman.getAlphabetBlockManager().drawBlocks(g);
                 g.setColor(new Color(0,0,0, 0.3F));
                 g.fillRect(0,0,getPreferredSize().width,getPreferredSize().height);
                 hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof ExitButton || b instanceof CloseButton));
                 break;
             case WIN:
-                hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayAgainButton));
+                CenterWord.drawCenteredWordHorizontal(g,"You Win!", new Font("Serif", Font.PLAIN, 30), Color.BLACK, 0, getPreferredSize().height/4, getPreferredSize().width);
+                hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayAgainButton || b instanceof ExitButton));
                 break;
             case LOSS:
-                hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayAgainButton));
+                CenterWord.drawCenteredWordHorizontal(g,"You Lose!", new Font("Serif", Font.PLAIN, 30), Color.BLACK, 0, getPreferredSize().height/4, getPreferredSize().width);
+                hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayAgainButton || b instanceof ExitButton));
                 break;
         }
         hangman.getUxButtonsManager().buildAll(g);
@@ -165,12 +181,14 @@ public class Game extends Canvas implements Runnable {
     }
 
     private ArrayList<String> getWordList(){
-        return FileManager.readFile(hangman.getWordFile());
+        return FileManager.readFile();
     }
 
     private String getRandomWord(ArrayList<String> words){
         return words.get(ThreadLocalRandom.current().nextInt(words.size()));
     }
+
+    private int guesses;
 
     public void mouseClick(MouseEvent e){
         hangman.getUxButtonsManager().checkClicked(e.getX(), e.getY());
@@ -179,14 +197,18 @@ public class Game extends Canvas implements Runnable {
 
             LetterBlock letterBlock = hangman.getAlphabetBlockManager().getBlockByCords(e.getX(), e.getY());
             char letter = letterBlock.getLetter();
+            guesses++;
+            if(guesses > 10){
+                gameState = GameState.LOSS;
+            }
 
-            if (!lettersChosen.contains(letter)) {
+            if (!lettersChosen.contains(letter) && letterBlock.isVisible()) {
 
                 for (char l : wordLetterList) {
                     if (l == letter) {
                         // they chose a CORRECT LETTER
                         lettersChosen.add(letter);
-                        letterBlock.delete();
+                        letterBlock.destroy();
 
                         if (lettersChosen.containsAll(wordLetterList)) {
                             gameState = GameState.WIN;
@@ -198,7 +220,7 @@ public class Game extends Canvas implements Runnable {
             for (char l : hangman.getAlphabetBlockManager().getAlphabet()) {
                 if (l == letter) {
                     lettersChosen.add(letter);
-                    letterBlock.delete();
+                    letterBlock.destroy();
                 }
             }
         }

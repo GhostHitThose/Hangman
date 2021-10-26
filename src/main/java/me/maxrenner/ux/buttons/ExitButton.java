@@ -7,7 +7,7 @@ import me.maxrenner.utils.CenterWord;
 import java.awt.*;
 
 public class ExitButton extends Button{
-    private Game game;
+    private final Game game;
 
     public ExitButton(int x, int y, int width, int height, Color color, Color hoveredColor, Game game) {
         super(x, y, width, height, color, hoveredColor, false);
