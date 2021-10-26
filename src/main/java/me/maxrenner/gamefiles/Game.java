@@ -162,7 +162,7 @@ public class Game extends Canvas implements Runnable {
                 break;
             case PAUSED:
                 hangman.getAlphabetBlockManager().drawBlocks(g);
-                g.setColor(new Color(0,0,0, 0.3F));
+                g.setColor(new Color(0,0,0, 0.8F));
                 g.fillRect(0,0,getPreferredSize().width,getPreferredSize().height);
                 hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof ExitButton || b instanceof CloseButton));
                 break;
