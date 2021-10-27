@@ -172,6 +172,7 @@ public class Game extends Canvas implements Runnable {
                 break;
             case LOSS:
                 CenterWord.drawCenteredWordHorizontal(g,"You Lose!", new Font("Serif", Font.PLAIN, 30), Color.BLACK, 0, getPreferredSize().height/4, getPreferredSize().width);
+                CenterWord.drawCenteredWordHorizontal(g,"Your word was " + word, new Font("Serif", Font.PLAIN, 30), Color.BLACK, 0, getPreferredSize().height/4+g.getFontMetrics().getAscent(), getPreferredSize().width);
                 hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof PlayAgainButton || b instanceof ExitButton));
                 break;
         }
@@ -197,24 +198,26 @@ public class Game extends Canvas implements Runnable {
 
             LetterBlock letterBlock = hangman.getAlphabetBlockManager().getBlockByCords(e.getX(), e.getY());
             char letter = letterBlock.getLetter();
-            guesses++;
-            if(guesses > 10){
-                gameState = GameState.LOSS;
-            }
 
             if (!lettersChosen.contains(letter) && letterBlock.isVisible()) {
 
+                boolean correct = false;
                 for (char l : wordLetterList) {
                     if (l == letter) {
                         // they chose a CORRECT LETTER
                         lettersChosen.add(letter);
                         letterBlock.destroy();
+                        correct = true;
 
                         if (lettersChosen.containsAll(wordLetterList)) {
                             gameState = GameState.WIN;
                         }
                     }
                 }
+                if(!correct)
+                    guesses++;
+                    if(guesses >= 10)
+                        gameState = GameState.LOSS;
             }
 
             for (char l : hangman.getAlphabetBlockManager().getAlphabet()) {
