@@ -232,6 +232,7 @@ public class Game extends Canvas implements Runnable {
     public void mouseMove(MouseEvent e) {
 
         hangman.getUxButtonsManager().checkHovered(e.getX(), e.getY());
+        if(gameState == GameState.PAUSED) return;
 
         if (!(hangman.getAlphabetBlockManager().contains(e.getX(), e.getY()))) {
             hangman.getAlphabetBlockManager().getLetterBlocks().forEach(b -> {
