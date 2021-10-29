@@ -10,6 +10,7 @@ import me.maxrenner.ux.buttons.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -157,11 +158,13 @@ public class Game extends Canvas implements Runnable {
 
                 g.setFont(new Font("Sans Serif", Font.PLAIN, 40));
                 g.setColor(Color.BLACK);
-                g.drawString("Guesses Left: " + (10-guesses), 0, g.getFontMetrics().getAscent());
+                g.drawString("Guesses Left: " + (5-guesses), 0, g.getFontMetrics().getAscent());
+                drawHangMan(g);
 
                 break;
             case PAUSED:
                 hangman.getAlphabetBlockManager().drawBlocks(g);
+                drawHangMan(g);
                 g.setColor(new Color(0,0,0, 0.8F));
                 g.fillRect(0,0,getPreferredSize().width,getPreferredSize().height);
                 hangman.getUxButtonsManager().getButtons().forEach(b -> b.setVisible(b instanceof ExitButton || b instanceof CloseButton));
@@ -216,7 +219,7 @@ public class Game extends Canvas implements Runnable {
                 }
                 if(!correct)
                     guesses++;
-                    if(guesses >= 10)
+                    if(guesses >= 5)
                         gameState = GameState.LOSS;
             }
 
@@ -275,5 +278,33 @@ public class Game extends Canvas implements Runnable {
         }
 
         CenterWord.drawCenteredWord(g, builder.toString(), font.deriveFont(attributes), Color.BLACK, 0,0,getPreferredSize().width, getPreferredSize().height);
+    }
+
+    public void drawHangMan(Graphics2D g){
+        g.setColor(Color.BLACK);
+        Stroke temp = g.getStroke();
+        g.setStroke(new BasicStroke(4f));
+        // draw head
+        g.drawOval(getPreferredSize().width/2-50/2, getPreferredSize().height/8-50, 50, 50);
+        // draw body
+        g.drawLine(getPreferredSize().width / 2, getPreferredSize().height / 8, getPreferredSize().width / 2, getPreferredSize().height / 3);
+        if (guesses >= 1) {
+            // draw legs
+            g.drawLine(getPreferredSize().width / 2, getPreferredSize().height / 3, getPreferredSize().width / 2 - 50, getPreferredSize().height / 2 - 20);
+            if (guesses >= 2) {
+                g.drawLine(getPreferredSize().width / 2, getPreferredSize().height / 3, getPreferredSize().width / 2 + 50, getPreferredSize().height / 2 - 20);
+                if (guesses >= 3) {
+                    // draw arms
+                    g.drawLine(getPreferredSize().width / 2, getPreferredSize().height / 8 + (getPreferredSize().height / 3 - getPreferredSize().height / 8) / 3,
+                            getPreferredSize().width / 2 - 50, getPreferredSize().height / 8 + (getPreferredSize().height / 3 - getPreferredSize().height / 8) / 3);
+                    if (guesses >= 4) {
+                        g.drawLine(getPreferredSize().width / 2, getPreferredSize().height / 8 + (getPreferredSize().height / 3 - getPreferredSize().height / 8) / 3,
+                                getPreferredSize().width / 2 + 50, getPreferredSize().height / 8 + (getPreferredSize().height / 3 - getPreferredSize().height / 8) / 3);
+                    }
+                }
+            }
+        }
+
+        g.setStroke(temp);
     }
 }
