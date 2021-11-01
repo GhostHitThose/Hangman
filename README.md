@@ -1,7 +1,5 @@
 # Hangman
 
-### Target Includes The Latest Successful Developer Build
-
 
 Build with
 ```
